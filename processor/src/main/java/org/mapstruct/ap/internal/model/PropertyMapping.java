@@ -70,6 +70,7 @@ public class PropertyMapping extends ModelElement {
     private final Type targetType;
     private final Assignment assignment;
     private final List<String> dependsOn;
+    private final boolean checkHasMethod;
     private final Assignment defaultValueAssignment;
 
     @SuppressWarnings("unchecked")
@@ -81,6 +82,7 @@ public class PropertyMapping extends ModelElement {
         protected ExecutableElement targetReadAccessor;
         protected String targetPropertyName;
         protected List<String> dependsOn;
+        protected boolean checkHasMethod;
         protected Set<String> existingVariableNames;
 
         public T mappingContext(MappingBuilderContext mappingContext) {
@@ -110,6 +112,11 @@ public class PropertyMapping extends ModelElement {
 
         public T dependsOn(List<String> dependsOn) {
             this.dependsOn = dependsOn;
+            return (T) this;
+        }
+
+        public T checkHasMethod(boolean checkHasMethod) {
+            this.checkHasMethod = checkHasMethod;
             return (T) this;
         }
 
@@ -246,6 +253,7 @@ public class PropertyMapping extends ModelElement {
                 targetType,
                 assignment,
                 dependsOn,
+                checkHasMethod,
                 getDefaultValueAssignment()
             );
         }
@@ -695,6 +703,7 @@ public class PropertyMapping extends ModelElement {
                 targetType,
                 assignment,
                 dependsOn,
+                checkHasMethod,
                 null
             );
         }
@@ -741,6 +750,7 @@ public class PropertyMapping extends ModelElement {
                 targetType,
                 assignment,
                 dependsOn,
+                checkHasMethod,
                 null
             );
         }
@@ -749,14 +759,14 @@ public class PropertyMapping extends ModelElement {
 
     // Constructor for creating mappings of constant expressions.
     private PropertyMapping(String name, String targetWriteAccessorName, String targetReadAccessorName, Type targetType,
-                            Assignment propertyAssignment, List<String> dependsOn, Assignment defaultValueAssignment ) {
+                            Assignment propertyAssignment, List<String> dependsOn, boolean checkHasMethod, Assignment defaultValueAssignment ) {
         this( name, null, targetWriteAccessorName, targetReadAccessorName,
-                        targetType, propertyAssignment, dependsOn, defaultValueAssignment );
+                        targetType, propertyAssignment, dependsOn, checkHasMethod, defaultValueAssignment );
     }
 
     private PropertyMapping(String name, String sourceBeanName, String targetWriteAccessorName,
                             String targetReadAccessorName, Type targetType, Assignment assignment,
-                            List<String> dependsOn, Assignment defaultValueAssignment ) {
+                            List<String> dependsOn, boolean checkHasMethod, Assignment defaultValueAssignment ) {
         this.name = name;
         this.sourceBeanName = sourceBeanName;
         this.targetWriteAccessorName = targetWriteAccessorName;
@@ -765,6 +775,7 @@ public class PropertyMapping extends ModelElement {
         this.assignment = assignment;
         this.dependsOn = dependsOn != null ? dependsOn : Collections.<String>emptyList();
         this.defaultValueAssignment = defaultValueAssignment;
+        this.checkHasMethod = checkHasMethod;
     }
 
     /**
@@ -814,6 +825,10 @@ public class PropertyMapping extends ModelElement {
         return dependsOn;
     }
 
+    public boolean shouldCheckHasMethod() {
+        return checkHasMethod;
+    }
+
     @Override
     public String toString() {
         return "PropertyMapping {"
@@ -824,6 +839,7 @@ public class PropertyMapping extends ModelElement {
             + "\n    propertyAssignment=" + assignment + ","
             + "\n    defaultValueAssignment=" + defaultValueAssignment + ","
             + "\n    dependsOn=" + dependsOn
+            + "\n    checkHasMethod=" + checkHasMethod
             + "\n}";
     }
 }

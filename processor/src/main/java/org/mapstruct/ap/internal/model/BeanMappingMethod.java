@@ -430,6 +430,7 @@ public class BeanMappingMethod extends MappingMethod {
                                 .defaultValue( mapping != null ? mapping.getDefaultValue() : null )
                                 .existingVariableNames( existingVariableNames )
                                 .dependsOn( mapping != null ? mapping.getDependsOn() : Collections.<String>emptyList() )
+                                .checkHasMethod( mapping != null ? mapping.shouldCheckHasMethod() : false )
                                 .build();
 
                             unprocessedSourceParameters.remove( sourceParameter );
@@ -494,6 +495,7 @@ public class BeanMappingMethod extends MappingMethod {
                             .dateFormat( mapping != null ? mapping.getDateFormat() : null )
                             .existingVariableNames( existingVariableNames )
                             .dependsOn( mapping != null ? mapping.getDependsOn() : Collections.<String>emptyList() )
+                            .checkHasMethod( mapping != null ? mapping.shouldCheckHasMethod() : false )
                             .build();
 
                         propertyMappings.add( propertyMapping );

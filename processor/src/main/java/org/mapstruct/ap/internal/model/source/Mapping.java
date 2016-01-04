@@ -285,6 +285,10 @@ public class Mapping {
         return dependsOn;
     }
 
+    public boolean shouldCheckHasMethod() {
+        return this.checkHasMethod;
+    }
+    
     private boolean hasPropertyInReverseMethod(String name, SourceMethod method) {
         CollectionMappingStrategyPrism cms = method.getMapperConfiguration().getCollectionMappingStrategy();
         return method.getResultType().getPropertyWriteAccessors( cms ).containsKey( name );
