@@ -165,4 +165,6 @@ public @interface Mapping {
      * @return Default value to set in case the source property is {@code null}.
      */
     String defaultValue() default "";
+
+    boolean checkHasMethod() default false;
 }
