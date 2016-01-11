@@ -759,7 +759,8 @@ public class PropertyMapping extends ModelElement {
 
     // Constructor for creating mappings of constant expressions.
     private PropertyMapping(String name, String targetWriteAccessorName, String targetReadAccessorName, Type targetType,
-                            Assignment propertyAssignment, List<String> dependsOn, boolean checkHasMethod, Assignment defaultValueAssignment ) {
+                            Assignment propertyAssignment, List<String> dependsOn, boolean checkHasMethod,
+                            Assignment defaultValueAssignment ) {
         this( name, null, targetWriteAccessorName, targetReadAccessorName,
                         targetType, propertyAssignment, dependsOn, checkHasMethod, defaultValueAssignment );
     }
