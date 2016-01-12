@@ -95,7 +95,7 @@ public class MappingBuilderContext {
          */
         Assignment getTargetAssignment(Method mappingMethod, String mappedElement, Type sourceType, Type targetType,
                                        String targetPropertyName, String dateFormat, List<TypeMirror> qualifiers,
-                                       TypeMirror resultType, String sourceReference, boolean preferUpdateMethods);
+                                       TypeMirror resultType, String sourceReference, String sourceHasMethod, boolean preferUpdateMethods);
 
         /**
          * returns a no arg factory method

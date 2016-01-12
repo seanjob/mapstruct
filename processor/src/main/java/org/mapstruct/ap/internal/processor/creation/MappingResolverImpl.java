@@ -104,7 +104,7 @@ public class MappingResolverImpl implements MappingResolver {
     @Override
     public Assignment getTargetAssignment(Method mappingMethod, String mappedElement, Type sourceType,
         Type targetType, String targetPropertyName, String dateFormat, List<TypeMirror> qualifiers,
-        TypeMirror resultType, String sourceReference, boolean preferUpdateMapping) {
+        TypeMirror resultType, String sourceReference, String sourceHasMethod, boolean preferUpdateMapping) {
 
         SelectionCriteria criteria =
             new SelectionCriteria(qualifiers, targetPropertyName, resultType, preferUpdateMapping );

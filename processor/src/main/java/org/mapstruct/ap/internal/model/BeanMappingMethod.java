@@ -377,9 +377,6 @@ public class BeanMappingMethod extends MappingMethod {
             Iterator<Entry<String, ExecutableElement>> targetProperties =
                 unprocessedTargetProperties.entrySet().iterator();
 
-            // usually there should be only one getter; only for Boolean there may be two: isFoo() and getFoo()
-            List<ExecutableElement> candidates = new ArrayList<ExecutableElement>( 2 );
-
             while ( targetProperties.hasNext() ) {
                 Entry<String, ExecutableElement> targetProperty = targetProperties.next();
 
@@ -392,28 +389,25 @@ public class BeanMappingMethod extends MappingMethod {
                         if ( sourceParameter.getType().isPrimitive() ) {
                             continue;
                         }
-
-                        Collection<ExecutableElement> sourceReadAccessors =
-                            sourceParameter.getType().getPropertyReadAccessors().values();
-                        for ( ExecutableElement sourceReadAccessor : sourceReadAccessors ) {
-                            String sourcePropertyName = Executables.getPropertyName( sourceReadAccessor );
-
-                            if ( sourcePropertyName.equals( targetProperty.getKey() ) ) {
-                                candidates.add( sourceReadAccessor );
-                            }
-                        }
-
+                        
                         PropertyMapping newPropertyMapping = null;
-                        ExecutableElement sourceAccessor = getSourceAccessor( targetProperty.getKey(), candidates );
-                        if ( sourceAccessor != null ) {
+
+                        ExecutableElement sourceReadAccessor = getCandidateAccessor(
+                        		sourceParameter.getType().getPropertyReadAccessors().values(), targetProperty.getKey());
+
+                        ExecutableElement sourceHasAccessor = getCandidateAccessor(
+                        		sourceParameter.getType().getPropertyHasAccessors().values(), targetProperty.getKey());
+                        
+                        if ( sourceReadAccessor != null ) {
                             Mapping mapping = method.getSingleMappingByTargetPropertyName( targetProperty.getKey() );
 
                             TypeElement sourceType = sourceParameter.getType().getTypeElement();
 
                             SourceReference sourceRef = new SourceReference.BuilderFromProperty()
                                 .sourceParameter( sourceParameter )
-                                .type( ctx.getTypeFactory().getReturnType( sourceType, sourceAccessor ) )
-                                .accessor( sourceAccessor )
+                                .type( ctx.getTypeFactory().getReturnType( sourceType, sourceReadAccessor ) )
+                                .readAccessor( sourceReadAccessor )
+                                .hasAccessor(sourceHasAccessor)
                                 .name( targetProperty.getKey() )
                                 .build();
 
@@ -436,8 +430,6 @@ public class BeanMappingMethod extends MappingMethod {
                             unprocessedSourceParameters.remove( sourceParameter );
 
                         }
-                        // candidates are handled
-                        candidates.clear();
 
                         if ( propertyMapping != null && newPropertyMapping != null ) {
                             // TODO improve error message
@@ -459,6 +451,23 @@ public class BeanMappingMethod extends MappingMethod {
                     targetProperties.remove();
                 }
             }
+        }
+
+        private ExecutableElement getCandidateAccessor(Collection<ExecutableElement> sourceReadOrHasAccessors, 
+        		String targetPropertyKey) {
+        	
+        	// usually there should be only one getter; only for Boolean there may be two: isFoo() and getFoo()
+            List<ExecutableElement> candidates = new ArrayList<ExecutableElement>( 2 );
+            
+            for ( ExecutableElement sourceReadOrHasAccessor : sourceReadOrHasAccessors ) {
+                String sourcePropertyName = Executables.getPropertyName( sourceReadOrHasAccessor );
+
+                if ( sourcePropertyName.equals( targetPropertyKey ) ) {
+                    candidates.add( sourceReadOrHasAccessor );
+                }
+            }
+
+            return getSourceAccessor( targetPropertyKey, candidates );
         }
 
         private void applyParameterNameBasedMapping() {
@@ -515,7 +524,8 @@ public class BeanMappingMethod extends MappingMethod {
             }
             // can only be the case for Booleans: isFoo() and getFoo(); The latter is preferred then
             else if ( candidates.size() == 2 ) {
-                if ( candidates.get( 0 ).getSimpleName().toString().startsWith( "get" ) ) {
+                if ( candidates.get( 0 ).getSimpleName().toString().startsWith( "get" ) ||
+                		candidates.get( 0 ).getSimpleName().toString().startsWith( "has" )) {
                     return candidates.get( 0 );
                 }
                 else {

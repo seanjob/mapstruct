@@ -651,6 +651,7 @@ public class PropertyMapping extends ModelElement {
                 qualifiers,
                 resultType,
                 constantExpression,
+                null,
                 method.getMappingTargetParameter() != null
             );
 

@@ -114,6 +114,7 @@ public class IterableMappingMethod extends MappingMethod {
                 qualifiers,
                 qualifyingElementTargetType,
                 loopVariableName,
+                null,
                 false
             );
 

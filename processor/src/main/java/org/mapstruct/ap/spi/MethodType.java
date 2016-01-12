@@ -43,5 +43,10 @@ public enum MethodType {
     /**
      * Any method which is neither a JavaBeans getter, setter nor an adder method.
      */
-    OTHER;
+    OTHER, 
+    
+    /**
+     * A JavaBeans hasser method, e.g. {@code public String hasName()}.
+     */
+    HASSER;
 }

@@ -127,6 +127,7 @@ public class MapMappingMethod extends MappingMethod {
                 keyQualifiers,
                 keyQualifyingTargetType,
                 "entry.getKey()",
+                "entry.hasKey()",
                 false
             );
 
